@@ -1,0 +1,27 @@
+openapi: 3.1.0
+info:
+  title: Star Wars API
+  description: API for interacting with Star Wars data.
+  version: 1.0.0
+
+paths:
+  # Ścieżki z filmu
+  /films:
+    $ref: "./paths/films.yaml#/paths/films"
+  /films/{id}:
+    $ref: "./paths/films.yaml#/paths/filmsId"
+
+  # Ścieżki z planetami
+  /planets:
+    $ref: "./paths/planets.yaml#/paths/planets"
+  /planets/{id}:
+    $ref: "./paths/planets.yaml#/paths/planetsId"
+
+components:
+  schemas:
+    Film:
+      $ref: "./components/films.yaml#/components/schemas/Film"
+    Planet:
+      $ref: "./components/planets.yaml#/components/schemas/Planet"
+    PlanetDetail:
+      $ref: "./components/planets.yaml#/components/schemas/PlanetDetail"

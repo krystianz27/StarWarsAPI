@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:16
+    container_name: starwars-db
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - starwars_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: starwars-app
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - starwars_network
+
+  # test:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: starwars-test
+  #   env_file:
+  #     - ./.env
+  #   # environment:
+  #   # - USE_TEST_DB=true
+  #   depends_on:
+  #     - app
+  #     - postgres
+  #   networks:
+  #     - starwars_network
+
+volumes:
+  postgres_data:
+
+networks:
+  starwars_network:
+    driver: bridge

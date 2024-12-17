@@ -1,0 +1,70 @@
+components:
+  schemas:
+    Planet:
+      type: object
+      properties:
+        uid:
+          type: string
+          example: "1"
+        name:
+          type: string
+          example: "Tatooine"
+        url:
+          type: string
+          example: "https://www.swapi.tech/api/planets/1"
+    PlanetDetail:
+      type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            diameter:
+              type: string
+              example: "10465"
+            rotation_period:
+              type: string
+              example: "23"
+            orbital_period:
+              type: string
+              example: "304"
+            gravity:
+              type: string
+              example: "1 standard"
+            population:
+              type: string
+              example: "200000"
+            climate:
+              type: string
+              example: "arid"
+            terrain:
+              type: string
+              example: "desert"
+            surface_water:
+              type: string
+              example: "1"
+            created:
+              type: string
+              format: date-time
+              example: "2024-12-17T15:23:44.809Z"
+            edited:
+              type: string
+              format: date-time
+              example: "2024-12-17T15:23:44.809Z"
+            name:
+              type: string
+              example: "Tatooine"
+            url:
+              type: string
+              example: "https://www.swapi.tech/api/planets/1"
+        description:
+          type: string
+          example: "A planet."
+        _id:
+          type: string
+          example: "5f7254c11b7dfa00041c6fae"
+        uid:
+          type: string
+          example: "1"
+        __v:
+          type: integer
+          example: 0

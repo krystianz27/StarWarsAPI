@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Star Wars API
+  description: API for interacting with Star Wars data.
+  version: 1.0.0
+
+paths:
+  /films:
+    get:
+      summary: Retrieve a list of films
+      description: Retrieve a list of films in the Star Wars universe.
+      parameters:
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "Filter films by title."
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: "Page number for pagination."
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: "Number of films per page."
+      responses:
+        "200":
+          description: A list of films
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  result:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Film"
+
+  /films/{id}:
+    get:
+      summary: Retrieve a film's details by ID
+      description: Retrieve the details of a specific film by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "ID of the film."
+      responses:
+        "200":
+          description: Film details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  result:
+                    $ref: "#/components/schemas/Film"
+
+components:
+  schemas:
+    Film:
+      type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            title:
+              type: string
+              description: "Title of the film."
+            episode_id:
+              type: integer
+              description: "Episode number of the film."
+            director:
+              type: string
+              description: "Director of the film."
+            producer:
+              type: string
+              description: "Producer of the film."
+            release_date:
+              type: string
+              format: date
+              description: "Film release date."
+            opening_crawl:
+              type: string
+              description: "Opening crawl text of the film."
+            url:
+              type: string
+              format: uri
+              description: "URL of the film."
+            characters:
+              type: array
+              items:
+                type: string
+                format: uri
+              description: "List of URLs to characters appearing in the film."
+            planets:
+              type: array
+              items:
+                type: string
+                format: uri
+              description: "List of URLs to planets appearing in the film."
+            starships:
+              type: array
+              items:
+                type: string
+                format: uri
+              description: "List of URLs to starships appearing in the film."
+            vehicles:
+              type: array
+              items:
+                type: string
+                format: uri
+              description: "List of URLs to vehicles appearing in the film."
+            species:
+              type: array
+              items:
+                type: string
+                format: uri
+              description: "List of URLs to species appearing in the film."
+          required:
+            - title
+            - episode_id
+            - director
+            - producer
+            - release_date
+            - opening_crawl
+            - url
+        description:
+          type: string
+          description: "Description of the film."
+        _id:
+          type: string
+          description: "Unique ID of the film."
+        uid:
+          type: string
+          description: "UID of the film."
+        __v:
+          type: integer
+          description: "Version of the document (used in databases like MongoDB)."
+      required:
+        - properties
+        - description
+        - _id
+        - uid
+        - __v
