@@ -17,12 +17,7 @@ router.get(
   getAllFilmsController
 );
 
-router.get(
-  "/analyze-openings",
-  // setResourceType("films"),
-  // cacheMiddleware,
-  analyzeFilmOpeningsController
-);
+router.get("/analyze-openings", analyzeFilmOpeningsController);
 
 router.get(
   "/:id",
