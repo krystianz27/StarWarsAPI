@@ -1,0 +1,204 @@
+openapi: 3.1.0
+info:
+  title: Star Wars API - Vehicles
+  description: API for retrieving information about Star Wars vehicles.
+  version: 1.0.0
+
+paths:
+  /vehicles:
+    get:
+      summary: Retrieve a list of Star Wars vehicles
+      description: Returns a paginated list of vehicles in the Star Wars universe. Supports filtering by name and model.
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter vehicles by name.
+        - name: model
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter vehicles by model.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of vehicles per page.
+      responses:
+        "200":
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  total_records:
+                    type: integer
+                    example: 39
+                  total_pages:
+                    type: integer
+                    example: 4
+                  previous:
+                    type: string
+                    nullable: true
+                    example: null
+                  next:
+                    type: string
+                    example: "https://swapi.tech/api/vehicles?page=2&limit=10"
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Vehicle"
+
+  /vehicles/{id}:
+    get:
+      summary: Retrieve a vehicle by ID
+      description: Returns details of a specific vehicle in the Star Wars universe by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the vehicle to retrieve.
+      responses:
+        "200":
+          description: Details of the specified vehicle
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  result:
+                    $ref: "#/components/schemas/VehicleDetail"
+
+components:
+  schemas:
+    Vehicle:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Unique identifier of the vehicle.
+          example: "4"
+        name:
+          type: string
+          description: Name of the vehicle.
+          example: "Sand Crawler"
+        url:
+          type: string
+          description: URL to access the vehicle details.
+          example: "https://www.swapi.tech/api/vehicles/4"
+
+    VehicleDetail:
+      type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            model:
+              type: string
+              description: Model of the vehicle.
+              example: "T-16 skyhopper"
+            vehicle_class:
+              type: string
+              description: Class of the vehicle.
+              example: "repulsorcraft"
+            manufacturer:
+              type: string
+              description: Manufacturer of the vehicle.
+              example: "Incom Corporation"
+            cost_in_credits:
+              type: string
+              description: Cost of the vehicle in credits.
+              example: "14500"
+            length:
+              type: string
+              description: Length of the vehicle.
+              example: "10.4"
+            crew:
+              type: string
+              description: Crew size of the vehicle.
+              example: "1"
+            passengers:
+              type: string
+              description: Passenger capacity of the vehicle.
+              example: "1"
+            max_atmosphering_speed:
+              type: string
+              description: Maximum atmospheric speed of the vehicle.
+              example: "1200"
+            cargo_capacity:
+              type: string
+              description: Cargo capacity of the vehicle.
+              example: "50"
+            consumables:
+              type: string
+              description: Consumable supply duration of the vehicle.
+              example: "0"
+            films:
+              type: array
+              items:
+                type: string
+                description: URL to a film where the vehicle appears.
+              description: List of films.
+              example: []
+            pilots:
+              type: array
+              items:
+                type: string
+                description: URL to a pilot associated with the vehicle.
+              description: List of pilots.
+              example: []
+            created:
+              type: string
+              format: date-time
+              description: Date when the vehicle was created in the database.
+              example: "2020-09-17T17:46:31.415Z"
+            edited:
+              type: string
+              format: date-time
+              description: Date when the vehicle was last edited.
+              example: "2020-09-17T17:46:31.415Z"
+            name:
+              type: string
+              description: Name of the vehicle.
+              example: "T-16 skyhopper"
+            url:
+              type: string
+              description: URL to access the vehicle details.
+              example: "https://www.swapi.tech/api/vehicles/6"
+        description:
+          type: string
+          description: Description of the vehicle.
+          example: "A vehicle"
+        _id:
+          type: string
+          description: Unique database ID for the vehicle.
+          example: "5f63a160cf50d100047f97fe"
+        uid:
+          type: string
+          description: Unique identifier of the vehicle.
+          example: "6"
+        __v:
+          type: integer
+          description: Document version in the database.
+          example: 0

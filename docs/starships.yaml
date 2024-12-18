@@ -1,0 +1,205 @@
+openapi: 3.1.0
+info:
+  title: Star Wars API - Starships
+  description: API for retrieving information about Star Wars starships.
+  version: 1.0.0
+
+paths:
+  /starships:
+    get:
+      summary: Retrieve a list of Star Wars starships
+      description: Returns a paginated list of starships in the Star Wars universe. Supports filtering by name and model.
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter starships by name.
+        - name: model
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter starships by model.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of starships per page.
+      responses:
+        "200":
+          description: A list of starships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  total_records:
+                    type: integer
+                    example: 36
+                  total_pages:
+                    type: integer
+                    example: 4
+                  previous:
+                    type: string
+                    nullable: true
+                    example: null
+                  next:
+                    type: string
+                    example: "https://swapi.tech/api/starships?page=2&limit=10"
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Starship"
+
+  /starships/{id}:
+    get:
+      summary: Retrieve a Starship by ID
+      description: Returns details of a specific Star Wars starship by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the starship to retrieve.
+      responses:
+        "200":
+          description: Details of the specified starship
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  result:
+                    $ref: "#/components/schemas/StarshipDetail"
+
+components:
+  schemas:
+    Starship:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Unique identifier of the starship.
+          example: "2"
+        name:
+          type: string
+          description: Name of the starship.
+          example: "CR90 corvette"
+        url:
+          type: string
+          description: URL to access the starship details.
+          example: "https://www.swapi.tech/api/starships/2"
+
+    StarshipDetail:
+      type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            model:
+              type: string
+              description: Model of the starship.
+              example: "Sentinel-class landing craft"
+            starship_class:
+              type: string
+              description: Class of the starship.
+              example: "landing craft"
+            manufacturer:
+              type: string
+              description: Manufacturer of the starship.
+              example: "Sienar Fleet Systems, Cyngus Spaceworks"
+            cost_in_credits:
+              type: string
+              description: Cost of the starship in credits.
+              example: "240000"
+            length:
+              type: string
+              description: Length of the starship.
+              example: "38"
+            crew:
+              type: string
+              description: Crew size of the starship.
+              example: "5"
+            passengers:
+              type: string
+              description: Passenger capacity of the starship.
+              example: "75"
+            max_atmosphering_speed:
+              type: string
+              description: Maximum atmospheric speed of the starship.
+              example: "1000"
+            hyperdrive_rating:
+              type: string
+              description: Hyperdrive rating of the starship.
+              example: "1.0"
+            MGLT:
+              type: string
+              description: Megalights per hour of the starship.
+              example: "70"
+            cargo_capacity:
+              type: string
+              description: Cargo capacity of the starship.
+              example: "180000"
+            consumables:
+              type: string
+              description: Consumable supply duration of the starship.
+              example: "1 month"
+            pilots:
+              type: array
+              items:
+                type: string
+                description: URL to a pilot associated with the starship.
+              description: List of pilots.
+              example: []
+            created:
+              type: string
+              format: date-time
+              description: Date when the starship was created in the database.
+              example: "2020-09-17T17:55:06.604Z"
+            edited:
+              type: string
+              format: date-time
+              description: Date when the starship was last edited.
+              example: "2020-09-17T17:55:06.604Z"
+            name:
+              type: string
+              description: Name of the starship.
+              example: "Sentinel-class landing craft"
+            url:
+              type: string
+              description: URL to access the starship details.
+              example: "https://www.swapi.tech/api/starships/5"
+        description:
+          type: string
+          description: Description of the starship.
+          example: "A Starship"
+        _id:
+          type: string
+          description: Unique database ID for the starship.
+          example: "5f63a34fee9fd7000499be20"
+        uid:
+          type: string
+          description: Unique identifier of the starship.
+          example: "5"
+        __v:
+          type: integer
+          description: Document version in the database.
+          example: 0

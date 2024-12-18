@@ -1,0 +1,187 @@
+openapi: 3.1.0
+info:
+  title: Star Wars Species API
+  description: API for retrieving information about Star Wars species.
+  version: 1.0.0
+
+paths:
+  /species:
+    get:
+      summary: Get all species
+      description: Retrieve a list of species in the Star Wars universe. Supports filtering by name.
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter species by name.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of species per page.
+      responses:
+        "200":
+          description: A list of species
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  total_records:
+                    type: integer
+                    example: 37
+                  total_pages:
+                    type: integer
+                    example: 4
+                  next:
+                    type: string
+                    nullable: true
+                    example: "https://swapi.tech/api/species?page=2&limit=10"
+                  previous:
+                    type: string
+                    nullable: true
+                    example: null
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SpeciesSummary"
+
+  /species/{id}:
+    get:
+      summary: Get species by ID
+      description: Retrieve details about a specific species by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the species.
+      responses:
+        "200":
+          description: Species details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+                  result:
+                    $ref: "#/components/schemas/SpeciesDetail"
+
+components:
+  schemas:
+    SpeciesSummary:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Unique identifier of the species.
+          example: "1"
+        name:
+          type: string
+          description: Name of the species.
+          example: "Human"
+        url:
+          type: string
+          description: URL to access details of the species.
+          example: "https://www.swapi.tech/api/species/1"
+
+    SpeciesDetail:
+      type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            classification:
+              type: string
+              description: Classification of the species.
+              example: "mammal"
+            designation:
+              type: string
+              description: Designation of the species.
+              example: "sentient"
+            average_height:
+              type: string
+              description: Average height of the species.
+              example: "180"
+            average_lifespan:
+              type: string
+              description: Average lifespan of the species.
+              example: "120"
+            hair_colors:
+              type: string
+              description: Common hair colors of the species.
+              example: "blonde, brown, black, red"
+            skin_colors:
+              type: string
+              description: Common skin colors of the species.
+              example: "caucasian, black, asian, hispanic"
+            eye_colors:
+              type: string
+              description: Common eye colors of the species.
+              example: "brown, blue, green, hazel, grey, amber"
+            homeworld:
+              type: string
+              description: URL to the species' homeworld.
+              example: "https://www.swapi.tech/api/planets/1"
+            language:
+              type: string
+              description: Primary language spoken by the species.
+              example: "Galactic Basic"
+            people:
+              type: array
+              items:
+                type: string
+                description: URL to a character belonging to the species.
+                example: "https://www.swapi.tech/api/people/66"
+            created:
+              type: string
+              format: date-time
+              description: Date when the species was created in the database.
+              example: "2024-12-17T15:23:44.812Z"
+            edited:
+              type: string
+              format: date-time
+              description: Date when the species was last edited.
+              example: "2024-12-17T15:23:44.812Z"
+            name:
+              type: string
+              description: Name of the species.
+              example: "Human"
+            url:
+              type: string
+              description: URL to access the species details.
+              example: "https://www.swapi.tech/api/species/1"
+        description:
+          type: string
+          description: Description of the species.
+          example: "A species within the Star Wars universe."
+        _id:
+          type: string
+          description: Unique database ID for the species.
+          example: "5f63a135cf50d100047f9768"
+        uid:
+          type: string
+          description: Unique identifier of the species.
+          example: "1"
+        __v:
+          type: integer
+          description: Document version in the database.
+          example: 0
