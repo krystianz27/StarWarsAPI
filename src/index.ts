@@ -1,7 +1,7 @@
 import { app } from "./app";
 import dotenv from "dotenv";
 import { AppDataSource } from "./database/data-source";
-import { TestDataSource } from "../tests/database/data-source";
+import { TestDataSource } from "../tests/database/data-source.mock";
 import { setupCronJobs } from "./cron/setupCronJobs";
 
 dotenv.config();

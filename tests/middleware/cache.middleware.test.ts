@@ -1,71 +1,68 @@
-// // tests/middleware/cache.middleware.test.ts
-// import { cacheMiddleware } from "../../src/middleware/cacheMiddleware";
-// import { Request, Response, NextFunction } from "express";
-// import { getRepository } from "typeorm";
+import { cacheMiddleware } from "../../src/middleware/cacheMiddleware";
+import { Request, Response, NextFunction } from "express";
+import { AppDataSource } from "../../src/database/data-source";
+import { Cache } from "../../src/entities/Cache";
 
-// jest.mock("typeorm", () => ({
-//   ...jest.requireActual("typeorm"),
-//   getRepository: jest.fn(),
-// }));
+jest.mock("../../src/database/data-source");
 
-// describe("Cache Middleware Tests", () => {
-//   let req: Partial<Request>;
-//   let res: Partial<Response>;
-//   let next: NextFunction;
+describe("Cache Middleware", () => {
+  it("should return cached data if available", async () => {
+    const mockCacheData = {
+      data: { name: "Earth" },
+      expiry: new Date(Date.now() + 10000),
+    };
+    const mockFindOne = jest.fn().mockResolvedValue(mockCacheData);
+    (AppDataSource.getRepository as jest.Mock).mockReturnValue({
+      findOne: mockFindOne,
+    });
 
-//   beforeEach(() => {
-//     req = { params: { resourceType: "films", id: "1" } }; // Ustawiamy params z resourceType i id
-//     res = { json: jest.fn() }; // Zamockowana metoda json
-//     next = jest.fn(); // Zamockowana funkcja next
-//   });
+    const req = {
+      params: { resourceType: "planets", id: "1" },
+      query: {},
+    } as unknown as Request;
 
-//   it("should return data from cache if available", async () => {
-//     const cacheData = {
-//       data: { title: "Star Wars", director: "George Lucas" },
-//     };
-//     const cacheRepo = { findOne: jest.fn().mockResolvedValue(cacheData) }; // Mockowanie repozytorium, które zwraca dane
+    const res = {
+      json: jest.fn(),
+    } as unknown as Response;
 
-//     // Mockowanie getRepository, żeby zwróciło nasze repozytorium
-//     (getRepository as jest.Mock).mockReturnValue(cacheRepo);
+    const next = jest.fn() as NextFunction;
 
-//     // Uruchomienie middleware
-//     await cacheMiddleware(req as Request, res as Response, next);
+    await cacheMiddleware(req, res, next);
 
-//     // Sprawdzenie, czy findOne zostało wywołane z odpowiednimi argumentami
-//     expect(cacheRepo.findOne).toHaveBeenCalledWith({
-//       where: {
-//         resourceType: "films",
-//         resourceId: "films:1", // Twój klucz cache
-//         expiry: expect.any(Date), // Oczekiwanie na Date (wymaga odpowiedniego mockowania daty, jeśli chcesz precyzyjnie sprawdzić)
-//       },
-//     });
+    expect(mockFindOne).toHaveBeenCalledWith({
+      where: {
+        resourceType: "planets",
+        resourceId: "planets/1",
+        expiry: expect.any(Date),
+      },
+    });
+    expect(res.json).toHaveBeenCalledWith(mockCacheData.data);
+    expect(next).not.toHaveBeenCalled();
+  });
 
-//     // Sprawdzenie, czy odpowiedź JSON jest zwrócona z danych cache
-//     expect(res.json).toHaveBeenCalledWith(cacheData.data);
+  it("should call next() if no cache is found", async () => {
+    const mockFindOne = jest.fn().mockResolvedValue(null);
+    (AppDataSource.getRepository as jest.Mock).mockReturnValue({
+      findOne: mockFindOne,
+    });
 
-//     // Upewnienie się, że next nie zostało wywołane, ponieważ dane z cache zostały zwrócone
-//     expect(next).not.toHaveBeenCalled();
-//   });
+    const req = {
+      params: { resourceType: "planets", id: "1" },
+      query: {},
+    } as unknown as Request;
 
-//   it("should call next if cache not found", async () => {
-//     const cacheRepo = { findOne: jest.fn().mockResolvedValue(null) }; // Brak danych w cache, zwracamy null
+    const res = {} as Response;
+    const next = jest.fn() as NextFunction;
 
-//     // Mockowanie getRepository, żeby zwróciło nasze repozytorium
-//     (getRepository as jest.Mock).mockReturnValue(cacheRepo);
+    await cacheMiddleware(req, res, next);
 
-//     // Uruchomienie middleware
-//     await cacheMiddleware(req as Request, res as Response, next);
-
-//     // Sprawdzamy, czy findOne zostało wywołane z odpowiednimi argumentami
-//     expect(cacheRepo.findOne).toHaveBeenCalledWith({
-//       where: {
-//         resourceType: "films",
-//         resourceId: "films:1", // Twój klucz cache
-//         expiry: expect.any(Date), // Oczekiwanie na Date
-//       },
-//     });
-
-//     // Sprawdzamy, czy next() zostało wywołane, ponieważ cache nie zawierało danych
-//     expect(next).toHaveBeenCalled();
-//   });
-// });
+    expect(mockFindOne).toHaveBeenCalledWith({
+      where: {
+        resourceType: "planets",
+        resourceId: "planets/1",
+        expiry: expect.any(Date),
+      },
+    });
+    expect(next).toHaveBeenCalled();
+  });
+});
