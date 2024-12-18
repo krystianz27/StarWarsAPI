@@ -71,6 +71,33 @@ paths:
                   result:
                     $ref: "#/components/schemas/Film"
 
+  /films/analyze/openings:
+    get:
+      summary: Analyze film opening crawls
+      description: >
+        Returns unique word counts from all opening crawls and the character(s)
+        that appear most frequently.
+      responses:
+        "200":
+          description: Film openings analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wordCounts:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    description: >
+                      Dictionary of unique words and their counts in the opening crawls.
+                  mostFrequentCharacters:
+                    type: array
+                    items:
+                      type: string
+                    description: >
+                      Array of character names that appear most frequently in the opening crawls.
+
 components:
   schemas:
     Film:

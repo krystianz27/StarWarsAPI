@@ -5,6 +5,7 @@ import { setResourceType } from "../middleware/setResourceTypeMiddleware";
 import {
   getAllFilmsController,
   getFilmByIdController,
+  analyzeFilmOpeningsController,
 } from "../controllers/film.controller";
 
 const router = Router();
@@ -17,9 +18,17 @@ router.get(
 );
 
 router.get(
+  "/analyze-openings",
+  // setResourceType("films"),
+  // cacheMiddleware,
+  analyzeFilmOpeningsController
+);
+
+router.get(
   "/:id",
   setResourceType("films"),
   cacheMiddleware,
   getFilmByIdController
 );
+
 export default router;

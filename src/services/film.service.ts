@@ -102,3 +102,69 @@ export const getFilmsByTitle = async (title: string) => {
     }
   }
 };
+
+export const analyzeFilmOpenings = async () => {
+  try {
+    const wordCounts: Record<string, number> = {};
+    const charactersCount: Record<string, number> = {};
+    const characterNames = new Set<string>();
+
+    // Fetch all people (with paginated requests)
+    let nextUrl = "https://swapi.tech/api/people";
+    while (nextUrl) {
+      const { data } = await axios.get(nextUrl);
+      for (const character of data.results) {
+        characterNames.add(character.name);
+      }
+      nextUrl = data.next;
+    }
+
+    console.log(`Fetched ${characterNames.size} character names.`);
+
+    // Fetch all films
+    const { data: filmsData } = await axios.get("https://swapi.tech/api/films");
+    const films = filmsData.result;
+
+    for (const film of films) {
+      const openingCrawl = film.properties.opening_crawl;
+
+      // Split opening_crawl into words
+      const words: string[] = openingCrawl
+        .split(/\s+/)
+        .map((word: string) => word.toLowerCase().replace(/[^\w]/g, ""));
+
+      // Count each word
+      for (const word of words) {
+        if (!word) continue;
+        wordCounts[word] = (wordCounts[word] || 0) + 1;
+      }
+
+      // Check for character names in opening_crawl
+      for (const name of characterNames) {
+        const regex = new RegExp(`\\b${name}\\b`, "gi");
+        const matchCount = (openingCrawl.match(regex) || []).length;
+        if (matchCount > 0) {
+          charactersCount[name] = (charactersCount[name] || 0) + matchCount;
+        }
+      }
+    }
+
+    // Find the most frequent characters
+    const maxCount = Math.max(...Object.values(charactersCount), 0);
+    const mostFrequentCharacters = Object.entries(charactersCount)
+      .filter(([_, count]) => count === maxCount)
+      .map(([name]) => name);
+
+    return {
+      wordCounts,
+      mostFrequentCharacters,
+    };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error analyzing film openings:", error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
+    throw new Error("Failed to analyze film openings.");
+  }
+};

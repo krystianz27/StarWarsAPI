@@ -3,6 +3,7 @@ import {
   getFilmsByTitle,
   getFilms,
   getFilmById,
+  analyzeFilmOpenings,
 } from "../services/film.service";
 
 export const getAllFilmsController = async (req: Request, res: Response) => {
@@ -46,6 +47,28 @@ export const getFilmByIdController = async (req: Request, res: Response) => {
       res
         .status(500)
         .json({ message: "Failed to fetch film", error: "Unknown error" });
+    }
+  }
+};
+
+export const analyzeFilmOpeningsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const analysis = await analyzeFilmOpenings();
+    res.json(analysis);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: "Failed to analyze film openings",
+        error: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "Failed to analyze film openings",
+        error: "Unknown error",
+      });
     }
   }
 };
